@@ -12,24 +12,43 @@ namespace ogbit.web.WcfRestCrossDomainSupport
     
     public class CarService : ICarService
     {
-
-        public Model.CarResponse GetCars(Model.CarRequest request)
+        /// <summary>
+        /// gets the makes in the vehicle data
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetMakes()
         {
-            return Data.VehicleData.GetItems();
+            return Data.VehicleData.GetMakes();
+            
         }
 
-        public Model.CarResponse GetCarsXdr(Stream request)
+        /// <summary>
+        /// gets all the cars
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Model.CarResponse GetCars(Model.CarRequest req)
+        {
+            return Data.VehicleData.GetItems(req);
+        }
+
+        /// <summary>
+        /// cross domain support for complex types
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public Model.CarResponse GetCarsXdr(Stream req)
         {
             try
             {
-                Model.CarRequest req = MapRequest<Model.CarRequest>(request);
-                return GetCars(req);
+                Model.CarRequest request = MapRequest<Model.CarRequest>(req);
+                return GetCars(request);
             }
             catch (System.Exception ex)
             {
                 throw new FaultException(ex.Message);
             }
-        }
+        }       
 
          /// <summary>
         /// maps a stream to a request object
@@ -60,5 +79,7 @@ namespace ogbit.web.WcfRestCrossDomainSupport
 
             return req;
         }
+
+        
     }
 }

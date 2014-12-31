@@ -13,6 +13,11 @@ namespace ogbit.web.WcfRestCrossDomainSupport
     [ServiceContract]
     public interface ICarService
     {
+        [OperationContract(Name = "GetMakes")]
+        [WebGet(UriTemplate = "/GetMakes", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
+        [FaultContract(typeof(FaultException))]
+        List<string> GetMakes();
+
         [OperationContract(Name = "GetCars")]
         [WebInvoke(UriTemplate = "/GetCars", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         [FaultContract(typeof(FaultException))]  
@@ -21,7 +26,7 @@ namespace ogbit.web.WcfRestCrossDomainSupport
         [OperationContract(Name = "GetCarsXdr")]
         [WebInvoke(UriTemplate = "/GetCarsXdr", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json)]
         [FaultContract(typeof(FaultException))]        
-        Model.CarResponse GetCarsXdr(Stream req);
+        Model.CarResponse GetCarsXdr(Stream req);       
 
     }
 }

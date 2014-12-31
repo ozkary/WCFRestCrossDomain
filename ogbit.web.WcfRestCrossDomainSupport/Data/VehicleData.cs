@@ -13,13 +13,54 @@ namespace ogbit.web.WcfRestCrossDomainSupport.Data
        /// <returns></returns>
         public static Model.CarResponse GetItems()
         {
-            Model.CarResponse resp = new Model.CarResponse();            
+            return GetData();
+        }
+
+        public static Model.CarResponse GetItems(Model.CarRequest req)
+        {
+            var list = GetData();
+            //apply simple filter to get the matching items
+            var data = (from item in list.Items
+                        where (string.IsNullOrWhiteSpace(req.Make) || item.Make == req.Make)
+                             && (string.IsNullOrWhiteSpace(req.Model) || item.Model == req.Model)
+                        select item).ToList();
+            Model.CarResponse resp = new Model.CarResponse()
+            {
+                Items = data
+            };
+
+            return resp;
+        }
+
+        public static List<string> GetMakes()
+        {
+            var list = GetData();            
+            List<string> makes = null;
+            if (list != null)
+            {
+                makes = (from item in list.Items
+                         where !String.IsNullOrWhiteSpace(item.Make)
+                         select item.Make).Distinct().ToList();
+            }
+
+            return makes;
+        }
+
+
+        
+        /// <summary>
+        /// gets the vehicle data
+        /// </summary>
+        /// <returns></returns>
+        private static Model.CarResponse GetData()
+        {
+            Model.CarResponse resp = new Model.CarResponse();
             List<Model.Vehicle> list = new List<Model.Vehicle>();
             list.Add(new Model.Vehicle()
             {
-                Make="Nissan",
-                Model="Altima",
-                Trim="GXE"
+                Make = "Nissan",
+                Model = "Altima",
+                Trim = "GXE"
             });
 
             list.Add(new Model.Vehicle()
@@ -43,9 +84,10 @@ namespace ogbit.web.WcfRestCrossDomainSupport.Data
                 Trim = "LT"
             });
 
-            resp.Items= list;
+            resp.Items = list;
 
             return resp;
+
         }
     }
 }

@@ -2,10 +2,124 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title></title>
+    <link href="Content/jquery.mobile-1.1.0.min.css" rel="stylesheet" />
+    <link href="Content/jquery.mobile.structure-1.1.0.min.css" rel="stylesheet" />
+    <link href="Content/jquery.mobile.theme-1.1.0.min.css" rel="stylesheet" />
     <script src="Scripts/jquery-1.7.1.min.js"></script>
     <script src="Scripts/jquery.mobile-1.1.0.min.js"></script>
+    <style type="text/css">
+        #message {display:none;}        
+        #copyright {margin:5px;text-align:center;}
+    </style>
 </head>
 <body>
+    <div data-role="page" id="pgMain" data-theme="d" data-add-back-btn="false" data-nobackbtn="true" data-title="OG-BIT.com Mobile">
+        <div data-role="header" data-theme="b" data-position="fixed" role="banner">
+            <h1 id="logo">
+                Vehicle Service Cross Domain
+            </h1><br />   
+            <a data-role="button" href="http://www.ozkary.com" target="_blank">ozkary.com</a>
+            <a data-role="button" href="#" id="help" >Help</a>
+       </div>            
+        <div data-role="content" data-theme="d" id="mainContent" class="ui-content" role="contentinfo">
+            <ul id="lvCars" data-role="listview" data-inset="true" data-filter-theme="c" data-filter-placeholder="Enter vehicle make" data-filter="true" data-input="#searchmakes">               
+            </ul>
+        </div>
 
+        <footer data-role="footer" data-theme="b" data-position="fixed">
+            <!--data-id='' to make it global-->
+            <div id="message" data-role="header" data-theme="e"></div>
+            <div id="copyright">All rights reserved.</div>
+            <div data-role="navbar">
+                <ul>
+                    <li><a id="GetCars"  href="#" data-icon="grid" >Get Cars</a></li>
+                    <li><a id="GetCarsXdr" href="#" data-icon="grid">Get Cars Xdr</a></li>                    
+                </ul>
+            </div>
+        </footer>   
+        </div>
+    </div>
 </body>
+<script type="text/javascript">
+   
+
+    $(document).on("mobileinit", function () {
+        $.mobile.loader.prototype.options.text = "loading";
+        $.mobile.loader.prototype.options.textVisible = false;
+        $.mobile.loader.prototype.options.theme = "a";
+        $.mobile.loader.prototype.options.html = "";
+    });
+
+    $(document).ready(function () {
+
+        $('#GetCars,#GetCarsXdr').click(function () {
+            var api = this.id.replace('#', '');            
+            OG.Vehicle.init();
+            OG.Vehicle.send(api);
+        })
+
+        $('#help').click(function () { OG.Vehicle.help(); })
+
+       //OG.Vehicle.data.Make = '';
+        //OG.Vehicle.send();
+        OG.Vehicle.help();
+        
+    });
+
+    if (typeof (OG) == "undefined") { OG = {}; }
+    OG.Vehicle = {
+        data: { Make: '', Model: '' }, uri: 'http://localhost:6664/CarService.svc/api/',
+        init: function () {
+            $('#lvCars, #message').html('');
+            $('#message').hide();
+
+
+        },
+        send: function (api) {
+            var self = OG.Vehicle;
+            var params = JSON.stringify(self.data);                        
+            $.ajax({
+                type: "POST",
+                contentType: "text/plain",
+                datatype: "json", timeout: 1500,
+                url: self.uri+api,          //TODO CHANGE TO MATCH YOUR URL
+                data: params,
+                beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); },
+                success: function (data, textStatus, xhr) { self.response(data); },
+                error: function (xhr, textStatus, errorThrown) {
+                    self.message('Error: ' + errorThrown);
+                }
+            });
+
+        },
+        response: function (data) {
+            var self = OG.Vehicle;
+            
+            if (typeof (data) != 'undefined') {
+                var items = data.Items;
+                if (items && items.length > 0) {                    
+                    $(items).each(function (id,item) { 
+                        var elm = '<li><h1>' + item.Make + '</h1> ' +item.Model + ' - ' + item.Trim + '</li>';
+                        $('#lvCars').append(elm);
+                    })
+                    $('#lvCars').listview('refresh', true);
+
+                } else { self.message('No vehicles found'); }
+
+
+            } else {
+                self.message('Invalid response');
+            }
+        },
+        message: function (msg) {
+            $('#message').show().text(msg);
+        },
+        help: function () {
+            var msg = 'Press GetCars/GetCarsXdr to do a cross domain request with a complex type. GetCars will fail with "BAD Request" because complex type with POST verbs are not supported. GetCarsXdr handles this limitation by using stream data type.';
+            OG.Vehicle.message(msg);
+
+        }
+    }
+
+</script>
 </html>

@@ -83,8 +83,6 @@
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <Content Include="Scripts\jquery.mobile-1.1.0.js" />
     <Content Include="Scripts\jquery.mobile-1.1.0.min.js" />
-    <Content Include="SeasonGreetings2014-From-ogbit-ES.html" />
-    <Content Include="SeasonGreetings2014-From-ogbit.html" />
     <Content Include="WcfCrossDomain.html" />
     <Content Include="Web.config" />
   </ItemGroup>
