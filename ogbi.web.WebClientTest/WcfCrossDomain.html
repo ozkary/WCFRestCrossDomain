@@ -42,14 +42,6 @@
 </body>
 <script type="text/javascript">
    
-
-    $(document).on("mobileinit", function () {
-        $.mobile.loader.prototype.options.text = "loading";
-        $.mobile.loader.prototype.options.textVisible = false;
-        $.mobile.loader.prototype.options.theme = "a";
-        $.mobile.loader.prototype.options.html = "";
-    });
-
     $(document).ready(function () {
 
         $('#GetCars,#GetCarsXdr').click(function () {
@@ -58,17 +50,14 @@
             OG.Vehicle.send(api);
         })
 
-        $('#help').click(function () { OG.Vehicle.help(); })
-
-       //OG.Vehicle.data.Make = '';
-        //OG.Vehicle.send();
+        $('#help').click(function () { OG.Vehicle.help(); })       
         OG.Vehicle.help();
         
     });
 
     if (typeof (OG) == "undefined") { OG = {}; }
     OG.Vehicle = {
-        data: { Make: '', Model: '' }, uri: 'http://localhost:6664/CarService.svc/api/',
+        data: { Make: '', Model: '' }, uri: 'http://localhost:6664/CarService.svc/api/',  //TODO CHANGE TO MATCH YOUR URL
         init: function () {
             $('#lvCars, #message').html('');
             $('#message').hide();
@@ -82,7 +71,7 @@
                 type: "POST",
                 contentType: "text/plain",
                 datatype: "json", timeout: 1500,
-                url: self.uri+api,          //TODO CHANGE TO MATCH YOUR URL
+                url: self.uri+api,          
                 data: params,
                 beforeSend: function (xhr) { xhr.setRequestHeader("Accept", "application/json"); },
                 success: function (data, textStatus, xhr) { self.response(data); },
