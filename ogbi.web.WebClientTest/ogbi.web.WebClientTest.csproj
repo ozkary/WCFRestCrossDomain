@@ -77,6 +77,7 @@
     <Content Include="Content\jquery.mobile.structure-1.1.0.min.css" />
     <Content Include="Content\jquery.mobile.theme-1.1.0.css" />
     <Content Include="Content\jquery.mobile.theme-1.1.0.min.css" />
+    <Content Include="images\wcf-crossdomain.png" />
     <Content Include="packages.config" />
     <None Include="Scripts\jquery-1.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
